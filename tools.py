@@ -6,35 +6,61 @@
 # ------------------------------------------------------
 
 
+# =================================================
 # Importing Neccessary Libraries
 # ------------------------------
 # Sys and io are used to redirect standard output so we can capture print statements from the executed code.
 # Traceback is used to capture the full error traceback if the code execution fails, which is essential for debugging and reflection.
-# ------------------------------
+# Re is used to clean the code of any markdown formatting that the LLM might have included, ensuring that we execute only the raw Python code.
+# ================================================
 import sys
 import io
 import traceback
+import re
 
+
+# =================================================
+# execute_python_code is a function that safely executes a string of Python code with strict guardrails.
+# It first cleans the code of any markdown tags, then checks for any forbidden keywords that could pose a security risk.
+# If the code passes these checks, it executes the code in an isolated memory space and captures any output or errors that occur.
+# The function returns a dictionary indicating whether the execution was successful and either the output or the error
+# =================================================
 def execute_python_code(code: str) -> dict:
     """
-    Safely executes a string of Python code and captures the output/errors.
+    Safely executes a string of Python code with strict guardrails.
     """
-    # Clean up any markdown formatting if the LLM accidentally includes it
-    clean_code = code.replace("```python", "").replace("```", "").strip()
+    # LAYER 2: Output Constraint (Regex Filter)
+    # Strip markdown tags in case the LLM ignored formatting rules
+    clean_code = re.sub(r"^```python\s*", "", code, flags=re.MULTILINE)
+    clean_code = re.sub(r"^```\s*", "", clean_code, flags=re.MULTILINE)
+    clean_code = clean_code.strip()
+
+    # LAYER 3: Safety Guardrails (Deny List)
+    # Block any commands that could interact with your operating system
+    forbidden_keywords = [
+        "import os", "import sys", "import subprocess", "import shutil", 
+        "os.", "sys.", "eval(", "exec(", "open("
+    ]
     
-    # Redirect standard output to capture print statements
+    for keyword in forbidden_keywords:
+        if keyword in clean_code:
+            return {
+                "status": "error", 
+                "output": f"SecurityViolation: The use of '{keyword}' is strictly prohibited in this environment."
+            }
+
+    # The Execution Sandbox
     old_stdout = sys.stdout
     redirected_output = sys.stdout = io.StringIO()
     
     try:
-        # Execute the code in an isolated dictionary (namespace)
+        # Run the clean, verified code in an isolated memory space
         exec(clean_code, {})
         sys.stdout = old_stdout
         output = redirected_output.getvalue()
         return {"status": "success", "output": output}
         
     except Exception as e:
-        # If it crashes, capture the error so the agent can reflect on it
         sys.stdout = old_stdout
         error_msg = traceback.format_exc()
         return {"status": "error", "output": error_msg}
