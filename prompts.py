@@ -38,9 +38,9 @@ Original Code:
 Error Traceback:
 {error}
 
-Analyze the error, fix the code, and output the entirely corrected Python script.
+Analyze the error and output the entirely corrected Python script.
 RULES:
 1. ONLY output valid Python code.
-2. Do NOT wrap the code in ```python or ``` tags. Just pure code.
-3. Do NOT provide any explanations or apologies.
+2. Do NOT use any external libraries other than pandas, openpyxl, matplotlib, and seaborn.
+3. If the error is a 'ModuleNotFoundError', it means you hallucinated a library. Rewrite the logic using only pandas.
 """
