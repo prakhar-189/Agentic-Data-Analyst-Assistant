@@ -19,6 +19,25 @@ import traceback
 import re
 
 
+
+# =================================================
+# sanitize_filename is a utility function that takes a string title and converts it into a safe filename format by making it lowercase, removing special characters, and replacing spaces with underscores.
+# This is used to ensure that any files saved by the generated code have valid and consistent filenames.
+# =================================================
+def sanitize_filename(title: str) -> str:
+    """
+    Takes an arbitrary title and converts it to a safe,
+    lowercase, and underscore-separated filename.
+    """
+    # 1. Convert to lowercase
+    safe_name = title.lower()
+    # 2. Keep only alphanumeric characters and spaces
+    safe_name = re.sub(r'[^a-z0-9\s]', '', safe_name)
+    # 3. Replace spaces with underscores
+    safe_name = re.sub(r'\s+', '_', safe_name)
+    return safe_name.strip('_')
+
+
 # =================================================
 # execute_python_code is a function that safely executes a string of Python code with strict guardrails.
 # It first cleans the code of any markdown tags, then checks for any forbidden keywords that could pose a security risk.
@@ -55,7 +74,8 @@ def execute_python_code(code: str) -> dict:
     
     try:
         # Run the clean, verified code in an isolated memory space
-        exec(clean_code, {})
+        namespace = {'sanitize_filename': sanitize_filename}
+        exec(clean_code, namespace)
         sys.stdout = old_stdout
         output = redirected_output.getvalue()
         return {"status": "success", "output": output}
