@@ -8,6 +8,8 @@
 
 
 # GENERATOR_PROMPT is the prompt that is used to generate the initial Python code based on the user's request.
+# In prompts.py
+
 GENERATOR_PROMPT = """
 You are a Senior Data Scientist AI. 
 Your job is to write Python code to analyze data based on the user's request.
@@ -20,12 +22,16 @@ RULES:
 1. ONLY output valid Python code.
 2. Do NOT wrap the code in ```python or ``` tags. Just pure code.
 3. Do NOT invent or import libraries other than pandas, matplotlib, or seaborn.
-4. If a plot is created, save it inside the output folder exactly like this: plt.savefig('output/output_plot.png')
-5. THE ESCAPE HATCH: If the request asks for columns not in the summary, output exactly: CLARIFICATION_NEEDED: [Ask the user for details]
+4. NEW RULE: Give every chart you plot a descriptive title.
+5. NEW RULE: To save the plot, you must:
+   a. Take your generated chart title.
+   b. Convert it to lowercase.
+   c. Replace all spaces and special characters with underscores. (You can assume the `sanitize_filename` tool is already available to you; just use `from tools import sanitize_filename`).
+   d. Save it as 'output/[sanitized_title].png'.
+6. THE ESCAPE HATCH: If the request asks for columns not in the summary, output exactly: CLARIFICATION_NEEDED: [Ask the user for details]
 
 User Request: {user_request}
 """
-
 
 # REFLECTION_PROMPT is the prompt that is used to analyze the error from the previous code and generate a corrected version of the code.
 REFLECTION_PROMPT = """
