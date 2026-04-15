@@ -41,6 +41,7 @@ class AgentState(TypedDict):
     data_summary: str
     code: str
     error: str
+    output: str
     iterations: int
 
 llm = OllamaLLM(model="qwen2.5-coder:7b", temperature=0.0)
@@ -79,7 +80,7 @@ def execute_node(state: AgentState):
     
     if result["status"] == "success":
         print(f"Success! Output:\n{result['output']}")
-        return {"error": None}
+        return {"error": None, "output": result['output']}
     else:
         print(f"Error Caught! Passing back to agent...")
         return {"error": result["output"]}
