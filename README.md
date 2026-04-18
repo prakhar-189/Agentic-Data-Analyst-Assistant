@@ -123,7 +123,7 @@ Then open `http://localhost:8501` in your browser.
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE) © Prakhar Srivastava
+This project is licensed under the [MIT License](LICENSE) © 2026 Prakhar Srivastava
 
 ---
 
