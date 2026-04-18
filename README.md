@@ -123,10 +123,18 @@ Then open `http://localhost:8501` in your browser.
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE) \(c)\ Prakhar Srivastava
 
 ---
 
 ## Acknowledgements
 
 Built with [LangGraph](https://github.com/langchain-ai/langgraph), [LangChain](https://github.com/langchain-ai/langchain), [Ollama](https://ollama.com/), and [Streamlit](https://streamlit.io/).
+
+---
+
+## Author
+
+Prakhar Srivastava
+
+Data Analyst, Data Scientist & AI Engineer | Dashboards, SQL, Machine Learning, Deep Learning, Generative AI, Prompt Engineering & Agentic AI
