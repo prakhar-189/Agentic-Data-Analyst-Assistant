@@ -78,7 +78,7 @@ Agentic-EDA-Engine/
 ### Installation
 
 ```bash
-git clone https://github.com/PrakharSri18-data/Agentic-EDA-Engine.git
+git clone https://github.com/prakhar-189/Agentic-EDA-Engine.git
 cd Agentic-EDA-Engine
 pip install -r requirements.txt
 ```
